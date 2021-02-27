@@ -25,7 +25,7 @@ criterion = torch.nn.TripletMarginLoss()
 
 def checkpoint(net, save_path, loss, iterations):
     snapshot_prefix = os.path.join(save_path, 'checkpoint_' + net._class_name())
-    snapshot_path = snapshot_prefix + '_loss_{:.4f}_iter_{}_model.pt'.format(loss.item(), iterations)
+    snapshot_path = snapshot_prefix + '_loss_{:.4f}_iter_{}_model.pt'.format(loss, iterations)
     torch.save(net, snapshot_path)
     for f in glob.glob(snapshot_prefix + '*'):
         if f != snapshot_path:
