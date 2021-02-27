@@ -45,7 +45,7 @@ for epoch in range(50):  # loop over the dataset multiple times
         optimizer.step()  
         print(loss)
 
-        if iterations % 3 == 0:
+        if iterations % 100 == 0:
             checkpoint(net, "log/", loss, iterations)
 
 torch.save(net, "final_model.pt")
