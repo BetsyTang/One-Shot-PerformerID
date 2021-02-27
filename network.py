@@ -12,8 +12,8 @@ class OSRNN(nn.Module):
         self.num_layers = num_layers
 
     def forward(self, input_layer):
-        h0 = torch.zeros(self.num_layers, input_layer.size(1), self.hidden_size)
-        c0 = torch.zeros(self.num_layers, input_layer.size(1), self.hidden_size)
+        h0 = torch.zeros(self.num_layers, input_layer.size(1), self.hidden_size).to(self.device)
+        c0 = torch.zeros(self.num_layers, input_layer.size(1), self.hidden_size).to(self.device)
 
         out, hidden = self.lstm(input_layer, (h0, c0))
         out = self.fc(out[:, -1, :])
