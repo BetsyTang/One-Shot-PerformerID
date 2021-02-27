@@ -31,6 +31,8 @@ def checkpoint(net, save_path, loss, iterations):
 iterations = 0
 
 for epoch in range(50):  # loop over the dataset multiple times
+    print_loss = 0
+    n = 0
     for i, data in enumerate(triplet_data, 0):
         iterations += 1
         # get the inputs
@@ -41,11 +43,12 @@ for epoch in range(50):  # loop over the dataset multiple times
         # forward + backward + optimize
         output_1,output_2,output_3 = net.forward(inputs[0].to(device),inputs[1].to(device),inputs[2].to(device))
         loss = criterion.forward(output_1, output_2, output_3) 
+        print_loss += loss
+        n += 1
         loss.backward()
         optimizer.step()  
-        print(loss)
 
         if iterations % 100 == 0:
-            checkpoint(net, "log/", loss, iterations)
+            checkpoint(net, "log/", print_loss/n, iterations)
 
 torch.save(net, "final_model.pt")
