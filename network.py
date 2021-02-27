@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import config
+from config import *
 from torch.autograd import Variable
 
 class OSRNN(nn.Module):
