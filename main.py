@@ -15,7 +15,10 @@ from sequence import NoteSeq, EventSeq, ControlSeq
 
 torch.backends.cudnn.benchmark = True
 
+print("Loading data")
 triplet_data = generate_triplet_data_loader()
+
+print("Building network")
 net = TripletNet(OSRNN(200,512,3)).to(device)
 optimizer = optim.Adam(net.parameters())
 criterion = torch.nn.TripletMarginLoss()
@@ -30,6 +33,7 @@ def checkpoint(net, save_path, loss, iterations):
 
 iterations = 0
 
+print("Start training...")
 for epoch in range(50):  # loop over the dataset multiple times
     print_loss = 0
     n = 0
