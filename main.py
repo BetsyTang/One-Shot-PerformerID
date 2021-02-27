@@ -38,6 +38,7 @@ header = '  Time Epoch Iteration Progress    (%Epoch)   Loss'
 log_template = ' '.join('{:>6.0f},{:>5.0f},{:>9.0f},{:>5.0f}/{:<5.0f} {:>7.1f}%,{:>7.4f}'.split(','))
 
 print("Start training...")
+print(header)
 start = time.time()
 for epoch in range(50):  # loop over the dataset multiple times
     print_loss = 0
