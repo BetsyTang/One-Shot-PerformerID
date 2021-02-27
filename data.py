@@ -88,7 +88,7 @@ def generate_triplet_data_loader():
     triplets = data.pair()
     event_list, control_list = data.sequence(config.train['window_size'], config.train['stride_size'])
     triplet_data = [(torch.FloatTensor(np.swapaxes(event_list[triplets[i][0]], 0, 1)),
-    torch.FloatTensor(np.swapaxes(event_list[triplets[i][1]],0,1)),
-    torch.FloatTensor(np.swapaxes(event_list[triplets[i][2]],0,1))) for i in range(len(triplets))]
+    torch.FloatTensor(np.swapaxes(event_list[triplets[i][1]], 0, 1)),
+    torch.FloatTensor(np.swapaxes(event_list[triplets[i][2]], 0, 1))) for i in range(len(triplets))]
     triplet_data = DataLoader(triplet_data, batch_size=1)
     return triplet_data
