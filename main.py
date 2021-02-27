@@ -19,7 +19,8 @@ print("Loading data")
 triplet_data = generate_triplet_data_loader()
 print(len(triplet_data))
 print("Building network")
-net = TripletNet(OSRNN(200,512,3)).to(device)
+# net = TripletNet(OSRNN(200,512,3)).to(device)
+net = torch.load("final_model.pt")
 optimizer = optim.Adam(net.parameters())
 criterion = torch.nn.TripletMarginLoss()
 
@@ -40,7 +41,7 @@ log_template = ' '.join('{:>6.0f},{:>5.0f},{:>9.0f},{:>5.0f}/{:<5.0f} {:>7.1f}%,
 print("Start training...")
 print(header)
 start = time.time()
-for epoch in range(20):  # loop over the dataset multiple times
+for epoch in range(40):  # loop over the dataset multiple times
     print_loss = 0
     n = 0
     for i, data in enumerate(triplet_data, 0):
@@ -53,8 +54,10 @@ for epoch in range(20):  # loop over the dataset multiple times
         # forward + backward + optimize
         output_1,output_2,output_3 = net.forward(inputs[0].to(device),inputs[1].to(device),inputs[2].to(device))
         loss = criterion.forward(output_1, output_2, output_3) 
+        
         print_loss += loss.item()
         n += 1
+        
         loss.backward()
         optimizer.step()  
 
