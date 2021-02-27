@@ -17,7 +17,7 @@ torch.backends.cudnn.benchmark = True
 
 print("Loading data")
 triplet_data = generate_triplet_data_loader()
-
+print(len(triplet_data))
 print("Building network")
 net = TripletNet(OSRNN(200,512,3)).to(device)
 optimizer = optim.Adam(net.parameters())
@@ -43,7 +43,6 @@ start = time.time()
 for epoch in range(50):  # loop over the dataset multiple times
     print_loss = 0
     n = 0
-    
     for i, data in enumerate(triplet_data, 0):
         iterations += 1
         # get the inputs
@@ -59,7 +58,7 @@ for epoch in range(50):  # loop over the dataset multiple times
         loss.backward()
         optimizer.step()  
 
-        if iterations % 100 == 0:
+        if iterations % 1960 == 0:
             checkpoint(net, "log/", print_loss/n, iterations)
             print(log_template.format(time.time()-start,
                     epoch, iterations, 1+i, len(triplet_data),
