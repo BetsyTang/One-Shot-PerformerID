@@ -93,5 +93,5 @@ def generate_triplet_data_loader():
     # torch.FloatTensor(np.swapaxes(event_list[triplets[i][2]], 0, 1))) for i in range(len(triplets))]
     # torch.save(triplet_data, 'triplet_data.data')
     triplet_data = torch.load("triplet_data.data")
-    triplet_data = DataLoader(triplet_data, batch_size=10, shuffle=True)
+    triplet_data = DataLoader(triplet_data, batch_size=1, shuffle=True)
     return triplet_data
