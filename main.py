@@ -13,6 +13,8 @@ import config
 from data import *
 from sequence import NoteSeq, EventSeq, ControlSeq
 
+torch.backends.cudnn.benchmark = True
+
 triplet_data = generate_triplet_data_loader()
 net = TripletNet(OSRNN(200,512,3)).to(device)
 optimizer = optim.Adam(net.parameters())
