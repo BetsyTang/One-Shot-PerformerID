@@ -9,8 +9,8 @@ class EventSequenceEncoder(nn.Module):
     def __init__(self, event_dim=EventSeq.dim(), hidden_dim=512,
                  gru_layers=3, gru_dropout=0.3):
         super().__init__()
-        self.event_embedding = nn.Embedding(event_dim, hidden_dim)
-        self.gru = nn.GRU(hidden_dim, hidden_dim,
+        self.event_embedding = nn.Embedding(event_dim, event_dim)
+        self.gru = nn.GRU(event_dim, hidden_dim,
                           num_layers=gru_layers, dropout=gru_dropout)
         self.attn = nn.Parameter(torch.randn(hidden_dim), requires_grad=True)
         self.output_fc = nn.Linear(hidden_dim, 128)
@@ -34,6 +34,8 @@ class OSRNN(nn.Module):
         self.hidden_size = hidden_size
         self.lstm = nn.LSTM(input_size, hidden_size, num_layers, dropout=0.05)
         self.fc = nn.Linear(hidden_size, 512)
+        # self.event_embedding = nn.Embedding(event_dim, hidden_dim)
+
         self.num_layers = num_layers
 
     def forward(self, input_layer):
