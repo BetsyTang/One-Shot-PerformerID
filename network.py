@@ -9,7 +9,7 @@ class OSRNN(nn.Module):
         super(OSRNN, self).__init__()
         self.hidden_size = hidden_size
         self.lstm = nn.LSTM(input_size, hidden_size, num_layers, dropout=0.05)
-        self.fc = nn.Linear(hidden_size, 128)
+        self.fc = nn.Linear(hidden_size, 512)
         self.num_layers = num_layers
 
     def forward(self, input_layer):
