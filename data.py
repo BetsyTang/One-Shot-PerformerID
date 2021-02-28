@@ -45,7 +45,7 @@ class Dataset:
     
     def pair(self, perform_id_seq, title_id_seq, event_seq_list):
         triplets = []
-        for i in range(len(event_seq_list)):
+        for i in tqdm(range(len(event_seq_list))):
             positive = np.where((np.asarray(perform_id_seq) == perform_id_seq[i]) \
             & (np.asarray(title_id_seq) != title_id_seq[i]))[0]
             positive = positive[positive>i]
@@ -70,7 +70,7 @@ class Dataset:
         control_sequences = []
         performer_id_sequences = []
         title_id_sequences = []
-        for i, seqlen in enumerate(np.asarray(self.seqlens)):
+        for i, seqlen in tqdm(enumerate(np.asarray(self.seqlens))):
             eventseq, controlseq = self.samples[i]
             eventseq_batch = []
             controlseq_batch = []
@@ -97,11 +97,14 @@ class Dataset:
 
 def generate_triplet_data_loader():
     data = Dataset("data_maestro/tmp")
+    print("Start Generating Sequences...")
     event_list, control_list, performer_list, title_list = data.sequence(config.train['window_size'], 
                                                                         config.train['stride_size'])
     print("Sequence Generating Done")
+    print("Start Pairing...")
     triplets = data.pair(performer_list, title_list, event_list)
     print("Pairing Done")
+    print("Start Making Triplets...")
     triplet_data = []
     event_list = np.asarray(event_list)
     for i in tqdm(range(len(triplets))):
@@ -109,5 +112,6 @@ def generate_triplet_data_loader():
     triplet_data = torch.LongTensor(np.swapaxes(np.asarray(triplet_data), 2, 3))
     torch.save(triplet_data, 'triplet_data.data')
     # triplet_data = torch.load("triplet_data_expand.data")
+    print("Making Triplets Done")
     triplet_data = DataLoader(triplet_data, batch_size=1, shuffle=True)
     return triplet_data
