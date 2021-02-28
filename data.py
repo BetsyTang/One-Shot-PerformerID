@@ -103,8 +103,9 @@ def generate_triplet_data_loader():
     triplets = data.pair(performer_list, title_list, event_list)
     print("Pairing Done")
     triplet_data = []
+    event_list = np.asarray(event_list)
     for i in tqdm(range(len(triplets))):
-        triplet_data.append(np.asarray(event_list)[triplets[i],])
+        triplet_data.append(event_list[triplets[i],])
     triplet_data = torch.LongTensor(np.swapaxes(np.asarray(triplet_data), 2, 3))
     torch.save(triplet_data, 'triplet_data.data')
     # triplet_data = torch.load("triplet_data_expand.data")
