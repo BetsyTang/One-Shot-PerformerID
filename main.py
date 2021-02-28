@@ -20,7 +20,7 @@ triplet_data = generate_triplet_data_loader()
 print(len(triplet_data))
 print("Building network")
 # net = TripletNet(OSRNN(240,512,3)).to(device)
-net = TripletNet(EventSequenceEncoder()).to(device)
+net = TripletNet(EventSequenceEncoder(hidden_dim=256)).to(device)
 # net = torch.load("final_model.pt")
 optimizer = optim.Adam(net.parameters())
 criterion = torch.nn.TripletMarginLoss()
@@ -62,7 +62,7 @@ for epoch in range(40):  # loop over the dataset multiple times
         loss.backward()
         optimizer.step()  
 
-        if iterations % 100 == 0:
+        if iterations % 1000 == 0:
             checkpoint(net, "log/", print_loss/n, iterations)
             print(log_template.format(time.time()-start,
                     epoch, iterations, 1+i, len(triplet_data),
