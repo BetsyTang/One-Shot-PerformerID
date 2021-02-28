@@ -33,16 +33,16 @@ class OSRNN(nn.Module):
         super(OSRNN, self).__init__()
         self.hidden_size = hidden_size
         self.lstm = nn.LSTM(input_size, hidden_size, num_layers, dropout=0.05)
-        self.fc = nn.Linear(hidden_size, 512)
+        self.fc = nn.Linear(hidden_size, 128)
         self.event_embedding = nn.Embedding(EventSeq.dim(), EventSeq.dim())
 
         self.num_layers = num_layers
 
     def forward(self, input_layer):
-        h0 = torch.zeros(self.num_layers, input_layer.size[1:2], self.hidden_size).to(device)
-        c0 = torch.zeros(self.num_layers, input_layer.size[1:2], self.hidden_size).to(device)
-        
         input_layer = self.event_embedding(input_layer)
+        print(input_layer.size(2))
+        h0 = torch.zeros(self.num_layers, input_layer.size(1), self.hidden_size).to(device)
+        c0 = torch.zeros(self.num_layers, input_layer.size(1), self.hidden_size).to(device)
         out, hidden = self.lstm(input_layer, (h0, c0))
         out = self.fc(out[:, -1, :])
         return out

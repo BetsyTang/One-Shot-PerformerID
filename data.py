@@ -80,8 +80,9 @@ class Dataset:
                 eventseq_batch.append(event)
                 controlseq_batch.append(control)
                 if len(eventseq_batch) == 40:
-                    event_sequences.append(np.stack(eventseq_batch, axis=1))
-                    control_sequences.append(np.stack(controlseq_batch, axis=1))
+                    print(np.stack(eventseq_batch, axis=0).shape)
+                    event_sequences.append(np.stack(eventseq_batch, axis=0))
+                    control_sequences.append(np.stack(controlseq_batch, axis=0))
                     performer_id_sequences.append(self.performer_id[i])
                     title_id_sequences.append(self.title_id[i])
                     
@@ -96,7 +97,7 @@ class Dataset:
 
 
 def generate_triplet_data_loader():
-    data = Dataset("data_maestro/tmp")
+    data = Dataset("data_maestro/test")
     print("Start Generating Sequences...")
     event_list, control_list, performer_list, title_list = data.sequence(config.train['window_size'], 
                                                                         config.train['stride_size'])
@@ -109,7 +110,7 @@ def generate_triplet_data_loader():
     event_list = np.asarray(event_list)
     for i in tqdm(range(len(triplets))):
         triplet_data.append(event_list[triplets[i],])
-    triplet_data = torch.LongTensor(np.swapaxes(np.asarray(triplet_data), 2, 3))
+    triplet_data = torch.LongTensor(np.asarray(triplet_data))
     torch.save(triplet_data, 'triplet_data.data')
     # triplet_data = torch.load("triplet_data_expand.data")
     print("Making Triplets Done")
