@@ -40,7 +40,6 @@ class Dataset:
             self.seqlens.append(len(eventseq))
         self.avglen = np.mean(self.seqlens)
 
-        print(np.asarray(self.samples).shape)
         print(np.asarray(self.seqlens).shape)
     
     def pair(self, perform_id_seq, title_id_seq, event_seq_list):
@@ -62,7 +61,6 @@ class Dataset:
         
         print(len(triplets))
         self.triplets = triplets
-        print(perform_id_seq[triplets[0][0]],perform_id_seq[triplets[0][1]],perform_id_seq[triplets[0][2]])
         return triplets
     
     def sequence(self, window_size, stride_size):
@@ -80,7 +78,6 @@ class Dataset:
                 eventseq_batch.append(event)
                 controlseq_batch.append(control)
                 if len(eventseq_batch) == 40:
-                    print(np.stack(eventseq_batch, axis=0).shape)
                     event_sequences.append(np.stack(eventseq_batch, axis=0))
                     control_sequences.append(np.stack(controlseq_batch, axis=0))
                     performer_id_sequences.append(self.performer_id[i])
