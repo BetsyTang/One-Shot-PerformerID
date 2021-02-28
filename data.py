@@ -3,6 +3,7 @@ import torch
 import itertools, os
 import numpy as np
 from progress.bar import Bar
+from tqdm import tqdm
 
 import config
 import utils
@@ -52,7 +53,8 @@ class Dataset:
             & (np.asarray(title_id_seq) == title_id_seq[i]))[0]
             negative_expand = np.where(np.asarray(perform_id_seq) != perform_id_seq[i])[0]
             if negative.size == 0:
-                negative = negative_expand
+                # negative = negative_expand
+                continue
             for j in range(len(positive)):
                 positive_choice = positive[j]
                 negative_choice = np.random.choice(negative)
@@ -100,8 +102,11 @@ def generate_triplet_data_loader():
     print("Sequence Generating Done")
     triplets = data.pair(performer_list, title_list, event_list)
     print("Pairing Done")
-    triplet_data = torch.LongTensor([np.swapaxes(np.asarray(event_list)[triplets[i],], 1, 2) for i in range(len(triplets))])
-    torch.save(triplet_data, 'triplet_data_expand.data')
+    triplet_data = []
+    for i in tqdm(range(len(triplets))):
+        triplet_data.append(np.asarray(event_list)[triplets[i],])
+    triplet_data = torch.LongTensor(np.swapaxes(np.asarray(triplet_data), 2, 3))
+    torch.save(triplet_data, 'triplet_data.data')
     # triplet_data = torch.load("triplet_data_expand.data")
     triplet_data = DataLoader(triplet_data, batch_size=1, shuffle=True)
     return triplet_data
