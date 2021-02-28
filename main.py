@@ -52,6 +52,7 @@ for epoch in range(40):  # loop over the dataset multiple times
         # print(inputs.shape)
         # zero the parameter gradients
         optimizer.zero_grad()
+        print(inputs[0].shape)
         # forward + backward + optimize
         output_1,output_2,output_3 = net.forward(inputs[0].to(device),inputs[1].to(device),inputs[2].to(device))
         loss = criterion.forward(output_1, output_2, output_3) 
