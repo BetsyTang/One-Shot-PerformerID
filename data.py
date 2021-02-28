@@ -97,7 +97,7 @@ class Dataset:
 
 
 def generate_triplet_data_loader():
-    data = Dataset("data_maestro/test")
+    data = Dataset("data_maestro/tmp")
     print("Start Generating Sequences...")
     event_list, control_list, performer_list, title_list = data.sequence(config.train['window_size'], 
                                                                         config.train['stride_size'])
