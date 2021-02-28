@@ -3,6 +3,30 @@ import torch.nn as nn
 import torch.nn.functional as F
 from config import *
 from torch.autograd import Variable
+from sequence import EventSeq, ControlSeq
+
+class EventSequenceEncoder(nn.Module):
+    def __init__(self, event_dim=EventSeq.dim(), hidden_dim=512,
+                 gru_layers=3, gru_dropout=0.3):
+        super().__init__()
+        self.event_embedding = nn.Embedding(event_dim, hidden_dim)
+        self.gru = nn.GRU(hidden_dim, hidden_dim,
+                          num_layers=gru_layers, dropout=gru_dropout)
+        self.attn = nn.Parameter(torch.randn(hidden_dim), requires_grad=True)
+        self.output_fc = nn.Linear(hidden_dim, 128)
+        self.output_fc_activation = nn.Sigmoid()
+
+    def forward(self, events, hidden=None, output_logits=False):
+        # events: [steps, batch_size]
+        events = self.event_embedding(events)
+        outputs, _ = self.gru(events, hidden) # [t, b, h]
+        weights = (outputs * self.attn).sum(-1, keepdim=True)
+        output = (outputs * weights).mean(0) # [b, h]
+        output = self.output_fc(output).squeeze(-1) # [b]
+        if output_logits:
+            return output
+        output = self.output_fc_activation(output)
+        return output
 
 class OSRNN(nn.Module):
     def __init__(self, input_size, hidden_size, num_layers):

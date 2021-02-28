@@ -3,6 +3,7 @@ import re
 import sys
 import torch
 import hashlib
+import numpy as np
 import pandas as pd
 from progress.bar import Bar
 from concurrent.futures import ProcessPoolExecutor
@@ -48,7 +49,10 @@ def preprocess_midi_files_under(csv_path, save_dir, num_workers):
     print('Done')
 
 if __name__ == '__main__':
-    preprocess_midi_files_under(
-            csv_path=sys.argv[1],
-            save_dir=sys.argv[2],
-            num_workers=int(sys.argv[3]))
+    # preprocess_midi_files_under(
+    #         csv_path=sys.argv[1],
+    #         save_dir=sys.argv[2],
+    #         num_workers=int(sys.argv[3]))
+    event_seq, control_seq = preprocess_midi("data_maestro/maestro-v3.0.0/2004/MIDI-Unprocessed_XP_22_R2_2004_01_ORIG_MID--AUDIO_22_R2_2004_03_Track03_wav.midi")
+    print(np.max(event_seq))
+    print(control_seq.shape)
