@@ -94,22 +94,23 @@ class Dataset:
 
 
 def generate_triplet_data_loader():
-    # data = Dataset("data_maestro/tmp")
-    # print("Start Generating Sequences...")
-    # event_list, control_list, performer_list, title_list = data.sequence(config.train['window_size'], 
-    #                                                                     config.train['stride_size'])
-    # print("Sequence Generating Done")
-    # print("Start Pairing...")
-    # triplets = data.pair(performer_list, title_list, event_list)
-    # print("Pairing Done")
-    # print("Start Making Triplets...")
-    # triplet_data = []
-    # event_list = np.asarray(event_list)
-    # for i in tqdm(range(len(triplets))):
-    #     triplet_data.append(event_list[triplets[i],])
-    # triplet_data = torch.LongTensor(np.asarray(triplet_data))
+    data = Dataset("data_maestro/tmp")
+    print("Start Generating Sequences...")
+    event_list, control_list, performer_list, title_list = data.sequence(config.train['window_size'], 
+                                                                        config.train['stride_size'])
+    print("Sequence Generating Done")
+    print("Start Pairing...")
+    triplets = data.pair(performer_list, title_list, event_list)
+    print("Pairing Done")
+    print("Start Making Triplets...")
+    triplet_data = []
+    event_list = np.asarray(event_list)
+    for i in tqdm(range(len(triplets))):
+        triplet_data.append(event_list[triplets[i],])
+    np.save("triplet_data.npy", np.asarray(triplet_data))
+    triplet_data = torch.LongTensor(np.load("triplet_data.npy"))
     # torch.save(triplet_data, 'triplet_data.data')
     # print("Making Triplets Done")
-    triplet_data = torch.load("triplet_data.data")
-    triplet_data = DataLoader(triplet_data, batch_size=1, shuffle=True)
+    # triplet_data = torch.load("triplet_data.data")
+    triplet_data = DataLoader(triplet_data, batch_size=1, shuffle=True, num_workers=4)
     return triplet_data
