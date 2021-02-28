@@ -42,14 +42,15 @@ class Dataset:
         print(np.asarray(self.samples).shape)
         print(np.asarray(self.seqlens).shape)
     
-    def pair(self):
+    def pair(self, perform_id_seq, title_id_seq, event_seq_list):
         triplets = []
-        for i in range(len(self.samples)):
-            positive = np.where(np.asarray(self.performer_id) == self.performer_id[i])[0]
+        for i in range(len(event_seq_list)):
+            positive = np.where((np.asarray(perform_id_seq) == perform_id_seq[i]) \
+            & (np.asarray(title_id_seq) != title_id_seq[i]))[0]
             positive = positive[positive>i]
-            negative = np.where((np.asarray(self.performer_id) != self.performer_id[i]) \
-            & (np.asarray(self.title_id) == self.title_id[i]))[0]
-            negative_expand = np.where(np.asarray(self.performer_id) != self.performer_id[i])[0]
+            negative = np.where((np.asarray(perform_id_seq) != perform_id_seq[i]) \
+            & (np.asarray(title_id_seq) == title_id_seq[i]))[0]
+            negative_expand = np.where(np.asarray(perform_id_seq) != perform_id_seq[i])[0]
             if negative.size == 0:
                 negative = negative_expand
             for j in range(len(positive)):
@@ -59,12 +60,14 @@ class Dataset:
         
         print(len(triplets))
         self.triplets = triplets
-        print(self.performer_id[triplets[0][0]],self.performer_id[triplets[0][1]],self.performer_id[triplets[0][2]])
+        print(perform_id_seq[triplets[0][0]],perform_id_seq[triplets[0][1]],perform_id_seq[triplets[0][2]])
         return triplets
     
     def sequence(self, window_size, stride_size):
         event_sequences = []
         control_sequences = []
+        performer_id_sequences = []
+        title_id_sequences = []
         for i, seqlen in enumerate(np.asarray(self.seqlens)):
             eventseq, controlseq = self.samples[i]
             eventseq_batch = []
@@ -74,9 +77,15 @@ class Dataset:
                 control = controlseq[j:j+window_size]
                 eventseq_batch.append(event)
                 controlseq_batch.append(control)
-            event_sequences.append(np.stack(eventseq_batch, axis=1))
-            control_sequences.append(np.stack(controlseq_batch, axis=1))
-        return event_sequences, control_sequences
+                if len(eventseq_batch) == 40:
+                    event_sequences.append(np.stack(eventseq_batch, axis=1))
+                    control_sequences.append(np.stack(controlseq_batch, axis=1))
+                    performer_id_sequences.append(self.performer_id[i])
+                    title_id_sequences.append(self.title_id[i])
+                    
+                    eventseq_batch = []
+                    controlseq_batch = []
+        return event_sequences, control_sequences, performer_id_sequences, title_id_sequences
     
     def __repr__(self):
         return (f'Dataset(root="{self.root}", '
@@ -85,14 +94,14 @@ class Dataset:
 
 
 def generate_triplet_data_loader():
-    # data = Dataset("data_maestro/tmp")
-    # triplets = data.pair()
-    # print("Pairing Done")
-    # event_list, control_list = data.sequence(config.train['window_size'], config.train['stride_size'])
-    # triplet_data = [(torch.LongTensor(np.swapaxes(event_list[triplets[i][0]], 0, 1)),
-    # torch.LongTensor(np.swapaxes(event_list[triplets[i][1]], 0, 1)),
-    # torch.LongTensor(np.swapaxes(event_list[triplets[i][2]], 0, 1))) for i in range(len(triplets))]
-    # torch.save(triplet_data, 'triplet_data_expand.data')
-    triplet_data = torch.load("triplet_data_expand.data")
+    data = Dataset("data_maestro/test")
+    event_list, control_list, performer_list, title_list = data.sequence(config.train['window_size'], 
+                                                                        config.train['stride_size'])
+    print("Sequence Generating Done")
+    triplets = data.pair(performer_list, title_list, event_list)
+    print("Pairing Done")
+    triplet_data = torch.LongTensor([np.swapaxes(np.asarray(event_list)[triplets[i],], 1, 2) for i in range(len(triplets))])
+    torch.save(triplet_data, 'triplet_data_expand.data')
+    # triplet_data = torch.load("triplet_data_expand.data")
     triplet_data = DataLoader(triplet_data, batch_size=1, shuffle=True)
     return triplet_data

@@ -18,7 +18,7 @@ train = {
     'learning_rate': 0.001,
     'batch_size': 64,
     'window_size': 200,
-    'stride_size': 10,
+    'stride_size': 40,
     'use_transposition': False,
     'control_ratio': 1.0,
     'teacher_forcing_ratio': 1.0

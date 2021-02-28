@@ -48,13 +48,12 @@ for epoch in range(40):  # loop over the dataset multiple times
     for i, data in enumerate(triplet_data, 0):
         iterations += 1
         # get the inputs
-        inputs = data
-        print(inputs[0].shape)
+        inputs = data.to(device)
+        inputs = torch.reshape(inputs, inputs.shape[1:])
         # zero the parameter gradients
         optimizer.zero_grad()
-        inputs = [torch.reshape(i, i.shape[1:]) for i in inputs]
         # forward + backward + optimize
-        output_1,output_2,output_3 = net.forward(inputs[0].to(device),inputs[1].to(device),inputs[2].to(device))
+        output_1,output_2,output_3 = net.forward(inputs[0],inputs[1],inputs[2])
         loss = criterion.forward(output_1, output_2, output_3) 
         
         print_loss += loss.item()
