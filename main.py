@@ -49,7 +49,7 @@ for epoch in range(40):  # loop over the dataset multiple times
         iterations += 1
         # get the inputs
         inputs = data
-        print(inputs.shape)
+        print(inputs[0].shape)
         # zero the parameter gradients
         optimizer.zero_grad()
         inputs = [torch.reshape(i, i.shape[1:]) for i in inputs]
