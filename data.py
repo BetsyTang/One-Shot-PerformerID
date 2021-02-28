@@ -94,7 +94,7 @@ class Dataset:
 
 
 def generate_triplet_data_loader():
-    # data = Dataset("data_maestro/tmp")
+    # data = Dataset("data_maestro/test")
     # print("Start Generating Sequences...")
     # event_list, control_list, performer_list, title_list = data.sequence(config.train['window_size'], 
     #                                                                     config.train['stride_size'])
@@ -110,6 +110,8 @@ def generate_triplet_data_loader():
     # np.save("triplet_data.npy", np.asarray(triplet_data))
     # print("Making Triplets Done")
 
-    triplet_data = torch.LongTensor(np.load("triplet_data.npy"))
+    triplet_data = np.load("triplet_data.npy")
+    triplet_data = triplet_data[np.random.choice(range(len(triplet_data)), size=5000)]
+    triplet_data = torch.LongTensor(triplet_data)
     triplet_data = DataLoader(triplet_data, batch_size=1, shuffle=True, num_workers=4)
     return triplet_data
