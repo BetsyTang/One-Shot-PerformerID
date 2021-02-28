@@ -19,7 +19,7 @@ print("Loading data")
 triplet_data = generate_triplet_data_loader()
 print(len(triplet_data))
 print("Building network")
-net = TripletNet(OSRNN(200,512,3)).to(device)
+net = TripletNet(OSRNN(240,512,3)).to(device)
 # net = TripletNet(EventSequenceEncoder()).to(device)
 # net = torch.load("final_model.pt")
 optimizer = optim.Adam(net.parameters())
@@ -49,7 +49,7 @@ for epoch in range(40):  # loop over the dataset multiple times
         iterations += 1
         # get the inputs
         inputs = data
-        # print(inputs.shape)
+        print(inputs.shape)
         # zero the parameter gradients
         optimizer.zero_grad()
         inputs = [torch.reshape(i, i.shape[1:]) for i in inputs]
