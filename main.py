@@ -61,7 +61,7 @@ for epoch in range(40):  # loop over the dataset multiple times
         loss.backward()
         optimizer.step()  
 
-        if iterations % 1960 == 0:
+        if iterations % len(triplet_data) == 0:
             checkpoint(net, "log/", print_loss/n, iterations)
             print(log_template.format(time.time()-start,
                     epoch, iterations, 1+i, len(triplet_data),
