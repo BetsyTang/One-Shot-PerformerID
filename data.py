@@ -111,7 +111,7 @@ def generate_triplet_data_loader():
     # print("Making Triplets Done")
 
     triplet_data = np.load("triplet_data.npy")
-    triplet_data = triplet_data[np.random.choice(range(len(triplet_data)), size=5000)]
+    triplet_data = triplet_data[np.random.choice(range(len(triplet_data)), size=50000)]
     triplet_data = torch.LongTensor(triplet_data)
     triplet_data = DataLoader(triplet_data, batch_size=1, shuffle=True, num_workers=4)
     return triplet_data
