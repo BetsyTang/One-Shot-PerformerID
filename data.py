@@ -49,12 +49,15 @@ class Dataset:
             positive = np.where(np.all([perform_id_seq == perform_id_seq[i], \
                 title_id_seq != title_id_seq[i]]))[0]
             positive = positive[positive>i]
+            print(positive)
             if perform_id_seq[i] in train_list:
                 negative = np.where(np.all([perform_id_seq != perform_id_seq[i], \
                     title_id_seq == title_id_seq[i], \
                     np.isin(perform_id_seq, train_list)]))[0]
                 negative_expand = np.where((perform_id_seq != perform_id_seq[i]) \
                     & np.isin(perform_id_seq, train_list))[0]
+                print(negative)
+                print(negative_expand)
                 if negative.size == 0:
                     negative = negative_expand
                     # continue
