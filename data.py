@@ -46,31 +46,31 @@ class Dataset:
         triplets_train = []
         triplets_test = []
         for i in tqdm(range(len(perform_id_seq))):
-            positive = np.where((perform_id_seq == perform_id_seq[i]) \
-                & (title_id_seq != title_id_seq[i]))[0]
+            positive = np.where(np.all([perform_id_seq == perform_id_seq[i], \
+                title_id_seq != title_id_seq[i]]))[0]
             positive = positive[positive>i]
             if perform_id_seq[i] in train_list:
-                negative = np.where((perform_id_seq != perform_id_seq[i]) \
-                    & (title_id_seq == title_id_seq[i]) \
-                    & (perform_id_seq in train_list))[0]
+                negative = np.where(np.all([perform_id_seq != perform_id_seq[i], \
+                    title_id_seq == title_id_seq[i], \
+                    np.isin(perform_id_seq, train_list)]))[0]
                 negative_expand = np.where((perform_id_seq != perform_id_seq[i]) \
-                    & (perform_id_seq in train_list))[0]
+                    & np.isin(perform_id_seq, train_list))[0]
                 if negative.size == 0:
-                    negative = negative_expand
-                    # continue
+                    # negative = negative_expand
+                    continue
                 for j in range(len(positive)):
                     positive_choice = positive[j]
                     negative_choice = np.random.choice(negative)
                     triplets_train.append((i, positive_choice, negative_choice))
             else:
-                negative = np.where((perform_id_seq != perform_id_seq[i]) \
-                    & (title_id_seq == title_id_seq[i]) \
-                    & (perform_id_seq in test_list))[0]
+                negative = np.where(np.all([perform_id_seq != perform_id_seq[i], \
+                    title_id_seq == title_id_seq[i], \
+                    np.isin(perform_id_seq, test_list)]))[0]
                 negative_expand = np.where((perform_id_seq != perform_id_seq[i]) \
-                    & (perform_id_seq in test_list))[0]
+                    & np.isin(perform_id_seq, train_list))[0]
                 if negative.size == 0:
-                    negative = negative_expand
-                    # continue
+                    # negative = negative_expand
+                    continue
                 for j in range(len(positive)):
                     positive_choice = positive[j]
                     negative_choice = np.random.choice(negative)
@@ -101,14 +101,14 @@ class Dataset:
                     
                     eventseq_batch = []
                     controlseq_batch = []
-            return np.asarray(event_sequences), \
-                    np.asarray(control_sequences), \
-                    np.asarray(performer_id_sequences), \
-                    np.asarray(title_id_sequences)
+        return np.asarray(event_sequences), \
+                np.asarray(control_sequences), \
+                np.asarray(performer_id_sequences), \
+                np.asarray(title_id_sequences)
     
     def split(self):
         set_performer = np.asarray(list(set(self.performer_id)))
-        np.random.seed(10086)
+        np.random.seed(1)
         train_performer = np.random.choice(set_performer, size=int(len(set_performer)*0.9), replace=False)
         test_performer = np.setdiff1d(set_performer, train_performer)
         return train_performer, test_performer
@@ -123,9 +123,11 @@ class Dataset:
 def generate_triplet_data_loader():
     data = Dataset("data_maestro/tmp")
     train_list, test_list = data.split()
+    print(train_list.shape,test_list.shape)
     print("Start Generating Sequences...")
     event_list, control_list, performer_list, title_list = data.sequence(config.train['window_size'], \
                                 config.train['stride_size'])
+    print(event_list.shape)
     print("Sequence Generating Done")
     print("Start Pairing...")
     triplets_train, triplets_test = data.pair(performer_list, title_list, train_list, test_list)
