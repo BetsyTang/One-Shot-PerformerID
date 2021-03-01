@@ -56,8 +56,8 @@ class Dataset:
                 negative_expand = np.where((perform_id_seq != perform_id_seq[i]) \
                     & (perform_id_seq in train_list))[0]
                 if negative.size == 0:
-                    # negative = negative_expand
-                    continue
+                    negative = negative_expand
+                    # continue
                 for j in range(len(positive)):
                     positive_choice = positive[j]
                     negative_choice = np.random.choice(negative)
@@ -69,8 +69,8 @@ class Dataset:
                 negative_expand = np.where((perform_id_seq != perform_id_seq[i]) \
                     & (perform_id_seq in test_list))[0]
                 if negative.size == 0:
-                    # negative = negative_expand
-                    continue
+                    negative = negative_expand
+                    # continue
                 for j in range(len(positive)):
                     positive_choice = positive[j]
                     negative_choice = np.random.choice(negative)
@@ -108,7 +108,7 @@ class Dataset:
     
     def split(self):
         set_performer = np.asarray(list(set(self.performer_id)))
-        np.random.seed(10)
+        np.random.seed(10086)
         train_performer = np.random.choice(set_performer, size=int(len(set_performer)*0.9), replace=False)
         test_performer = np.setdiff1d(set_performer, train_performer)
         return train_performer, test_performer
