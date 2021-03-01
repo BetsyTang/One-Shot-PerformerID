@@ -69,8 +69,8 @@ class Dataset:
                 negative_expand = np.where((perform_id_seq != perform_id_seq[i]) \
                     & np.isin(perform_id_seq, train_list))[0]
                 if negative.size == 0:
-                    negative = negative_expand
-                    # continue
+                    # negative = negative_expand
+                    continue
                 for j in range(len(positive)):
                     positive_choice = positive[j]
                     negative_choice = np.random.choice(negative)
@@ -143,7 +143,7 @@ def generate_triplet_data_loader():
     print("Making Triplets Done")
 
     train_data = np.load("train_data.npy")
-    train_data = train_data[np.random.choice(range(len(train_data)), size=50000, replace=False)]
+    # train_data = train_data[np.random.choice(range(len(train_data)), size=50000, replace=False)]
     train_data = torch.LongTensor(train_data)
     train_data = DataLoader(train_data, batch_size=1, shuffle=True, num_workers=4)
     return train_data
