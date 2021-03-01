@@ -46,29 +46,26 @@ class Dataset:
         triplets_train = []
         triplets_test = []
         for i in tqdm(range(len(perform_id_seq))):
-            positive = np.where(np.all([perform_id_seq == perform_id_seq[i], \
-                title_id_seq != title_id_seq[i]]))[0]
+            positive = np.where((perform_id_seq == perform_id_seq[i])\
+                &(title_id_seq != title_id_seq[i]))[0]
             positive = positive[positive>i]
-            print(positive)
             if perform_id_seq[i] in train_list:
-                negative = np.where(np.all([perform_id_seq != perform_id_seq[i], \
-                    title_id_seq == title_id_seq[i], \
-                    np.isin(perform_id_seq, train_list)]))[0]
+                negative = np.where((perform_id_seq != perform_id_seq[i]) \
+                    & (title_id_seq == title_id_seq[i]) \
+                    & (np.isin(perform_id_seq, train_list)))[0]
                 negative_expand = np.where((perform_id_seq != perform_id_seq[i]) \
                     & np.isin(perform_id_seq, train_list))[0]
-                print(negative)
-                print(negative_expand)
                 if negative.size == 0:
-                    negative = negative_expand
-                    # continue
+                    # negative = negative_expand
+                    continue
                 for j in range(len(positive)):
                     positive_choice = positive[j]
                     negative_choice = np.random.choice(negative)
                     triplets_train.append((i, positive_choice, negative_choice))
             else:
-                negative = np.where(np.all([perform_id_seq != perform_id_seq[i], \
-                    title_id_seq == title_id_seq[i], \
-                    np.isin(perform_id_seq, test_list)]))[0]
+                negative = np.where((perform_id_seq != perform_id_seq[i]) \
+                    & (title_id_seq == title_id_seq[i]) \
+                    & (np.isin(perform_id_seq, test_list)))[0]
                 negative_expand = np.where((perform_id_seq != perform_id_seq[i]) \
                     & np.isin(perform_id_seq, train_list))[0]
                 if negative.size == 0:
