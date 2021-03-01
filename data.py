@@ -108,7 +108,7 @@ class Dataset:
     
     def split(self):
         set_performer = np.asarray(list(set(self.performer_id)))
-        np.random.seed(5)
+        np.random.seed(10)
         train_performer = np.random.choice(set_performer, size=int(len(set_performer)*0.9), replace=False)
         test_performer = np.setdiff1d(set_performer, train_performer)
         return train_performer, test_performer
