@@ -25,7 +25,7 @@ class EventSequenceEncoder(nn.Module):
         output = self.output_fc(output).squeeze(-1) # [b]
         if output_logits:
             return output
-        output = self.output_fc_activation(output)
+        # output = self.output_fc_activation(output)
         return output
 
 class OSRNN(nn.Module):
