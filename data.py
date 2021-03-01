@@ -101,10 +101,10 @@ class Dataset:
                     
                     eventseq_batch = []
                     controlseq_batch = []
-            return np.asarray(event_sequences), 
-            np.asarray(control_sequences), 
-            np.asarray(performer_id_sequences),  
-            np.asarray(title_id_sequences)
+            return np.asarray(event_sequences), \
+                    np.asarray(control_sequences), \
+                    np.asarray(performer_id_sequences), \
+                    np.asarray(title_id_sequences)
     
     def split(self):
         set_performer = np.asarray(list(set(self.performer_id)))
@@ -124,8 +124,11 @@ def generate_triplet_data_loader():
     data = Dataset("data_maestro/tmp")
     train_list, test_list = data.split()
     print("Start Generating Sequences...")
-    event_list, control_list, performer_list, title_list = data.sequence(config.train['window_size'], 
-                                                                        config.train['stride_size'])
+    event_list, \
+    control_list, \ 
+    performer_list, \
+    title_list = data.sequence(config.train['window_size'], \
+                                config.train['stride_size'])
     print("Sequence Generating Done")
     print("Start Pairing...")
     triplets_train, triplets_test = data.pair(performer_list, title_list, train_list, test_list)
