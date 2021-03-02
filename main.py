@@ -42,7 +42,7 @@ log_template = ' '.join('{:>6.0f},{:>5.0f},{:>9.0f},{:>5.0f}/{:<5.0f} {:>7.1f}%,
 print("Start training...")
 print(header)
 start = time.time()
-for epoch in range(40):  # loop over the dataset multiple times
+for epoch in range(100):  # loop over the dataset multiple times
     print_loss = 0
     n = 0
     for i, data in enumerate(triplet_data, 0):
@@ -62,7 +62,7 @@ for epoch in range(40):  # loop over the dataset multiple times
         loss.backward()
         optimizer.step()  
 
-        if iterations % 1000 == 0:
+        if iterations % len(triplet_data) == 0:
             checkpoint(net, "log/", print_loss/n, iterations)
             print(log_template.format(time.time()-start,
                     epoch, iterations, 1+i, len(triplet_data),
