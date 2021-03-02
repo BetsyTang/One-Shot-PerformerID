@@ -122,26 +122,26 @@ class Dataset:
 
 
 def generate_triplet_data_loader():
-    data = Dataset("data_maestro/tmp")
-    train_list, test_list = data.split()
-    print(train_list.shape,test_list.shape)
-    print("Start Generating Sequences...")
-    event_list, control_list, performer_list, title_list = data.sequence(config.train['window_size'], \
-                                config.train['stride_size'])
-    print(event_list.shape)
-    print("Sequence Generating Done")
-    print("Start Pairing...")
-    triplets_train, triplets_test = data.pair(performer_list, title_list, train_list, test_list)
-    print("Pairing Done")
-    print("Start Making Triplets...")
-    train_data = []; test_data = []
-    for i in tqdm(range(len(triplets_train))):
-        train_data.append(event_list[triplets_train[i],])
-    for i in tqdm(range(len(triplets_test))):
-        test_data.append(event_list[triplets_test[i],])
-    np.save("train_data.npy", np.asarray(train_data))
-    np.save("test_data.npy", np.asarray(test_data))
-    print("Making Triplets Done")
+    # data = Dataset("data_maestro/tmp")
+    # train_list, test_list = data.split()
+    # print(train_list.shape,test_list.shape)
+    # print("Start Generating Sequences...")
+    # event_list, control_list, performer_list, title_list = data.sequence(config.train['window_size'], \
+    #                             config.train['stride_size'])
+    # print(event_list.shape)
+    # print("Sequence Generating Done")
+    # print("Start Pairing...")
+    # triplets_train, triplets_test = data.pair(performer_list, title_list, train_list, test_list)
+    # print("Pairing Done")
+    # print("Start Making Triplets...")
+    # train_data = []; test_data = []
+    # for i in tqdm(range(len(triplets_train))):
+    #     train_data.append(event_list[triplets_train[i],])
+    # for i in tqdm(range(len(triplets_test))):
+    #     test_data.append(event_list[triplets_test[i],])
+    # np.save("train_data.npy", np.asarray(train_data))
+    # np.save("test_data.npy", np.asarray(test_data))
+    # print("Making Triplets Done")
 
     train_data = np.load("train_data.npy")
     # train_data = train_data[np.random.choice(range(len(train_data)), size=50000, replace=False)]
