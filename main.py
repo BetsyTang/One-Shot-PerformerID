@@ -16,10 +16,10 @@ from sequence import NoteSeq, EventSeq, ControlSeq
 torch.backends.cudnn.benchmark = True
 
 print("Loading data")
-triplet_data = generate_triplet_data_loader()
+triplet_data = generate_triplet_data_loader(generate=True)
 print(len(triplet_data))
 print("Building network")
-net = TripletNet(OSRNN(240,256,3)).to(device)
+net = TripletNet(OSRNN(240,128,5)).to(device)
 # net = TripletNet(EventSequenceEncoder(hidden_dim=256)).to(device)
 # net = torch.load("final_model.pt")
 optimizer = optim.Adam(net.parameters(), lr=0.001)
