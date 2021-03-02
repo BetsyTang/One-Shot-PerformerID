@@ -57,11 +57,11 @@ class Dataset:
                 negative_expand = np.where((perform_id_seq != perform_id_seq[i]) \
                     & np.isin(perform_id_seq, train_list))[0]
                 if negative.size == 0:
-                    # negative = negative_expand
-                    continue
+                    negative = negative_expand
+                    # continue
                 for j in range(len(positive)):
                     positive_choice = positive[j]
-                    negative_choice = np.random.choice(negative)
+                    negative_choice = np.random.choice(negative_expand)
                     triplets_train.append((i, positive_choice, negative_choice))
             else:
                 negative = np.where((perform_id_seq != perform_id_seq[i]) \
@@ -70,11 +70,11 @@ class Dataset:
                 negative_expand = np.where((perform_id_seq != perform_id_seq[i]) \
                     & np.isin(perform_id_seq, train_list))[0]
                 if negative.size == 0:
-                    # negative = negative_expand
-                    continue
+                    negative = negative_expand
+                    # continue
                 for j in range(len(positive)):
                     positive_choice = positive[j]
-                    negative_choice = np.random.choice(negative)
+                    negative_choice = np.random.choice(negative_expand)
                     triplets_test.append((i, positive_choice, negative_choice))
         
         print(len(triplets_train), len(triplets_test))
@@ -122,28 +122,28 @@ class Dataset:
 
 
 def generate_triplet_data_loader():
-    # data = Dataset("data_maestro/tmp")
-    # train_list, test_list = data.split()
-    # print(train_list.shape,test_list.shape)
-    # print("Start Generating Sequences...")
-    # event_list, control_list, performer_list, title_list = data.sequence(config.train['window_size'], \
-    #                             config.train['stride_size'])
-    # print(event_list.shape)
-    # print("Sequence Generating Done")
-    # print("Start Pairing...")
-    # triplets_train, triplets_test = data.pair(performer_list, title_list, train_list, test_list)
-    # print("Pairing Done")
-    # print("Start Making Triplets...")
-    # train_data = []; test_data = []
-    # for i in tqdm(range(len(triplets_train))):
-    #     train_data.append(event_list[triplets_train[i],])
-    # for i in tqdm(range(len(triplets_test))):
-    #     test_data.append(event_list[triplets_test[i],])
-    # np.save("train_data.npy", np.asarray(train_data))
-    # np.save("test_data.npy", np.asarray(test_data))
-    # print("Making Triplets Done")
+    data = Dataset("data_maestro/tmp")
+    train_list, test_list = data.split()
+    print(train_list.shape,test_list.shape)
+    print("Start Generating Sequences...")
+    event_list, control_list, performer_list, title_list = data.sequence(config.train['window_size'], \
+                                config.train['stride_size'])
+    print(event_list.shape)
+    print("Sequence Generating Done")
+    print("Start Pairing...")
+    triplets_train, triplets_test = data.pair(performer_list, title_list, train_list, test_list)
+    print("Pairing Done")
+    print("Start Making Triplets...")
+    train_data = []; test_data = []
+    for i in tqdm(range(len(triplets_train))):
+        train_data.append(event_list[triplets_train[i],])
+    for i in tqdm(range(len(triplets_test))):
+        test_data.append(event_list[triplets_test[i],])
+    np.save("train_easy_data.npy", np.asarray(train_data))
+    np.save("test_easy_data.npy", np.asarray(test_data))
+    print("Making Triplets Done")
 
-    train_data = np.load("train_data.npy")
+    train_data = np.load("train_easy_data.npy")
     # train_data = train_data[np.random.choice(range(len(train_data)), size=50000, replace=False)]
     train_data = torch.LongTensor(train_data)
     train_data = DataLoader(train_data, batch_size=1, shuffle=True, num_workers=4)
