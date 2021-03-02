@@ -22,7 +22,7 @@ print("Building network")
 net = TripletNet(OSRNN(240,256,3)).to(device)
 # net = TripletNet(EventSequenceEncoder(hidden_dim=256)).to(device)
 # net = torch.load("final_model.pt")
-optimizer = optim.Adam(net.parameters(), lr=0.1)
+optimizer = optim.Adam(net.parameters(), lr=0.001)
 criterion = torch.nn.TripletMarginLoss()
 
 def checkpoint(net, save_path, loss, iterations):
