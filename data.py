@@ -41,6 +41,7 @@ class Dataset:
         self.avglen = np.mean(self.seqlens)
 
         print(np.asarray(self.seqlens).shape)
+        print(self.avglen)
     
     def pair(self, perform_id_seq, title_id_seq, train_list, test_list):
         triplets_train = []
@@ -149,4 +150,4 @@ def generate_triplet_data_loader():
     return train_data
 
 if __name__ == '__main__':
-    generate_triplet_data_loader()
+    data = Dataset("data_maestro/tmp")
