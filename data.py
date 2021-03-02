@@ -10,7 +10,7 @@ import utils
 from sequence import EventSeq, ControlSeq
 from torch.utils.data import DataLoader
 
-MODE = "hard"
+MODE = "easy"
 
 
 # pylint: disable=E1101
@@ -133,31 +133,32 @@ class Dataset:
                 f'avglen={self.avglen})')
 
 
-def generate_triplet_data_loader():
-    data = Dataset("data_maestro/tmp")
-    train_list, test_list = data.split()
-    print(train_list.shape,test_list.shape)
-    print("Start Generating Sequences...")
-    event_list, control_list, performer_list, title_list = data.sequence(config.train['window_size'], \
-                                config.train['stride_size'])
-    print(event_list.shape)
-    print("Sequence Generating Done")
-    print("Start Pairing...")
-    triplets_train, triplets_test = data.pair(performer_list, title_list, train_list, test_list)
-    print("Pairing Done")
-    print("Start Making Triplets...")
-    train_data = []; test_data = []
-    for i in tqdm(range(len(triplets_train))):
-        train_data.append(event_list[triplets_train[i],])
-    for i in tqdm(range(len(triplets_test))):
-        test_data.append(event_list[triplets_test[i],])
-    if MODE == "easy":
-        np.save("train_easy_data.npy", np.asarray(train_data))
-        np.save("test_easy_data.npy", np.asarray(test_data))
-    else:
-        np.save("train_data.npy", np.asarray(train_data))
-        np.save("test_data.npy", np.asarray(test_data))
-    print("Making Triplets Done")
+def generate_triplet_data_loader(generate=False):
+    if generate == True:
+        data = Dataset("data_maestro/tmp")
+        train_list, test_list = data.split()
+        print(train_list.shape,test_list.shape)
+        print("Start Generating Sequences...")
+        event_list, control_list, performer_list, title_list = data.sequence(config.train['window_size'], \
+                                    config.train['stride_size'])
+        print(event_list.shape)
+        print("Sequence Generating Done")
+        print("Start Pairing...")
+        triplets_train, triplets_test = data.pair(performer_list, title_list, train_list, test_list)
+        print("Pairing Done")
+        print("Start Making Triplets...")
+        train_data = []; test_data = []
+        for i in tqdm(range(len(triplets_train))):
+            train_data.append(event_list[triplets_train[i],])
+        for i in tqdm(range(len(triplets_test))):
+            test_data.append(event_list[triplets_test[i],])
+        if MODE == "easy":
+            np.save("train_easy_data.npy", np.asarray(train_data))
+            np.save("test_easy_data.npy", np.asarray(test_data))
+        else:
+            np.save("train_data.npy", np.asarray(train_data))
+            np.save("test_data.npy", np.asarray(test_data))
+        print("Making Triplets Done")
 
     if MODE == "easy":
         train_data = np.load("train_easy_data.npy")
