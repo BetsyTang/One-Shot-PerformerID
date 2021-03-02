@@ -10,6 +10,8 @@ import utils
 from sequence import EventSeq, ControlSeq
 from torch.utils.data import DataLoader
 
+MODE = "hard"
+
 
 # pylint: disable=E1101
 # pylint: disable=W0101
@@ -57,11 +59,16 @@ class Dataset:
                 negative_expand = np.where((perform_id_seq != perform_id_seq[i]) \
                     & np.isin(perform_id_seq, train_list))[0]
                 if negative.size == 0:
-                    negative = negative_expand
-                    # continue
+                    if MODE == "easy":
+                        negative = negative_expand
+                    else:
+                        continue
                 for j in range(len(positive)):
                     positive_choice = positive[j]
-                    negative_choice = np.random.choice(negative_expand)
+                    if MODE == "easy":
+                        negative_choice = np.random.choice(negative_expand)
+                    else:
+                        negative_choice = np.random.choice(negative)
                     triplets_train.append((i, positive_choice, negative_choice))
             else:
                 negative = np.where((perform_id_seq != perform_id_seq[i]) \
@@ -70,11 +77,16 @@ class Dataset:
                 negative_expand = np.where((perform_id_seq != perform_id_seq[i]) \
                     & np.isin(perform_id_seq, train_list))[0]
                 if negative.size == 0:
-                    negative = negative_expand
-                    # continue
+                    if MODE == "easy":
+                        negative = negative_expand
+                    else:
+                        continue
                 for j in range(len(positive)):
                     positive_choice = positive[j]
-                    negative_choice = np.random.choice(negative_expand)
+                    if MODE == "easy":
+                        negative_choice = np.random.choice(negative_expand)
+                    else:
+                        negative_choice = np.random.choice(negative)
                     triplets_test.append((i, positive_choice, negative_choice))
         
         print(len(triplets_train), len(triplets_test))
@@ -139,15 +151,22 @@ def generate_triplet_data_loader():
         train_data.append(event_list[triplets_train[i],])
     for i in tqdm(range(len(triplets_test))):
         test_data.append(event_list[triplets_test[i],])
-    np.save("train_easy_data.npy", np.asarray(train_data))
-    np.save("test_easy_data.npy", np.asarray(test_data))
+    if MODE == "easy":
+        np.save("train_easy_data.npy", np.asarray(train_data))
+        np.save("test_easy_data.npy", np.asarray(test_data))
+    else:
+        np.save("train_data.npy", np.asarray(train_data))
+        np.save("test_data.npy", np.asarray(test_data))
     print("Making Triplets Done")
 
-    train_data = np.load("train_easy_data.npy")
-    train_data = train_data[np.random.choice(range(len(train_data)), size=10000, replace=False)]
+    if MODE == "easy":
+        train_data = np.load("train_easy_data.npy")
+        train_data = train_data[np.random.choice(range(len(train_data)), size=10000, replace=False)]
+    else:
+        train_data = np.load("train_data.npy")
     train_data = torch.LongTensor(train_data)
     train_data = DataLoader(train_data, batch_size=1, shuffle=True, num_workers=4)
     return train_data
 
 if __name__ == '__main__':
-    data = Dataset("data_maestro/tmp")
+    generate_triplet_data_loader()
