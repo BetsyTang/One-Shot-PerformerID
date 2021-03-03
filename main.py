@@ -16,7 +16,7 @@ from sequence import NoteSeq, EventSeq, ControlSeq
 torch.backends.cudnn.benchmark = True
 
 print("Loading data")
-triplet_data = generate_triplet_data_loader(generate=True)
+triplet_data = generate_triplet_data_loader(generate=False)
 print(len(triplet_data))
 print("Building network")
 net = TripletNet(OSRNN(240,256,3)).to(device)
