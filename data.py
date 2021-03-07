@@ -119,7 +119,7 @@ class Dataset:
                 np.asarray(performer_id_sequences), \
                 np.asarray(title_id_sequences)
     
-    def split(self, ratio=0.4):
+    def split(self, ratio=0.1):
         set_performer = np.asarray(list(set(self.performer_id)))
         np.random.seed(5)
         train_performer = np.random.choice(set_performer, size=int(len(set_performer)*ratio), replace=False)
