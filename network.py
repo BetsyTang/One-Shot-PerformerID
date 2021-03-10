@@ -32,7 +32,7 @@ class OSRNN(nn.Module):
     def __init__(self, input_size, hidden_size, num_layers):
         super(OSRNN, self).__init__()
         self.hidden_size = hidden_size
-        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, dropout=0.05)
+        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, dropout=0.1)
         self.fc = nn.Linear(hidden_size, 128)
         self.event_embedding = nn.Embedding(EventSeq.dim(), EventSeq.dim())
 
@@ -45,7 +45,6 @@ class OSRNN(nn.Module):
         out, hidden = self.lstm(input_layer, (h0, c0))
         out = self.fc(out[:, -1, :])
         return out
-
 
 class EmbeddingNet(nn.Module):
     def __init__(self):
@@ -71,7 +70,6 @@ class EmbeddingNet(nn.Module):
     def get_embedding(self, x):
         return self.forward(x)
 
-
 class EmbeddingNetL2(EmbeddingNet):
     def __init__(self):
         super(EmbeddingNetL2, self).__init__()
@@ -83,7 +81,6 @@ class EmbeddingNetL2(EmbeddingNet):
 
     def get_embedding(self, x):
         return self.forward(x)
-
 
 class ClassificationNet(nn.Module):
     def __init__(self, embedding_net, n_classes):
@@ -102,7 +99,6 @@ class ClassificationNet(nn.Module):
     def get_embedding(self, x):
         return self.nonlinear(self.embedding_net(x))
 
-
 class SiameseNet(nn.Module):
     def __init__(self, embedding_net):
         super(SiameseNet, self).__init__()
@@ -115,7 +111,6 @@ class SiameseNet(nn.Module):
 
     def get_embedding(self, x):
         return self.embedding_net(x)
-
 
 class TripletNet(nn.Module):
     def __init__(self, embedding_net):
