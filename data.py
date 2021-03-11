@@ -119,7 +119,7 @@ class Dataset:
                 np.asarray(performer_id_sequences), \
                 np.asarray(title_id_sequences)
     
-    def split(self, ratio=0.1):
+    def split(self, ratio=0.7):
         set_performer = np.asarray(list(set(self.performer_id)))
         np.random.seed(5)
         train_performer = np.random.choice(set_performer, size=int(len(set_performer)*ratio), replace=False)
@@ -162,8 +162,8 @@ def generate_triplet_data_loader(generate=False):
 
     if MODE == "easy":
         train_data = np.load("train_easy_data.npy")
-        # np.random.seed(1)
-        # train_data = train_data[np.random.choice(range(len(train_data)), size=50000, replace=False)]
+        np.random.seed(1)
+        train_data = train_data[np.random.choice(range(len(train_data)), size=100000, replace=False)]
     else:
         train_data = np.load("train_data.npy")
     train_data = torch.LongTensor(train_data)
