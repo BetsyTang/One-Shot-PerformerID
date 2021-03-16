@@ -19,7 +19,8 @@ print("Loading data")
 triplet_data = generate_triplet_data_loader(generate=True)
 print(len(triplet_data))
 print("Building network")
-net = TripletNet(OSRNN(240,512,5)).to(device)
+net = TripletNet(OSRNN(240,512,3)).to(device)
+cos = nn.CosineSimilarity()
 # net = TripletNet(EventSequenceEncoder(hidden_dim=256, gru_layers=5)).to(device)
 # net = torch.load("final_model.pt")
 optimizer = optim.Adam(net.parameters(), lr=0.001)
@@ -36,8 +37,8 @@ def checkpoint(net, save_path, loss, iterations):
 iterations = 0
 
 
-header = '  Time Epoch Iteration Progress    (%Epoch)   Loss'
-log_template = ' '.join('{:>6.0f},{:>5.0f},{:>9.0f},{:>5.0f}/{:<5.0f} {:>7.1f}%,{:>7.4f}'.split(','))
+header = '  Time Epoch Iteration Progress    (%Epoch)   Loss   Acc'
+log_template = ' '.join('{:>6.0f},{:>5.0f},{:>9.0f},{:>5.0f}/{:<5.0f} {:>7.1f}%,{:>7.4f}, {:>7.4f}'.split(','))
 
 print("Start training...")
 print(header)
@@ -45,6 +46,7 @@ start = time.time()
 for epoch in range(50):  # loop over the dataset multiple times
     print_loss = 0
     n = 0
+    acc = 0
     for i, data in enumerate(triplet_data, 0):
         iterations += 1
         # get the inputs
@@ -54,6 +56,10 @@ for epoch in range(50):  # loop over the dataset multiple times
         optimizer.zero_grad()
         # forward + backward + optimize
         output_1,output_2,output_3 = net.forward(inputs[0],inputs[1],inputs[2])
+
+        if (cos(output_1, output_2) > 0) and (cos(output_1, output_3) < 0):
+            acc += 1
+
         loss = criterion(output_1, output_2, output_3) 
         
         print_loss += loss.item()
@@ -62,10 +68,10 @@ for epoch in range(50):  # loop over the dataset multiple times
         loss.backward()
         optimizer.step()  
 
-        if iterations % len(triplet_data) == 0:
+        if iterations % 1000 == 0:
             checkpoint(net, "log/", print_loss/n, iterations)
             print(log_template.format(time.time()-start,
                     epoch, iterations, 1+i, len(triplet_data),
-                    100. * (1+i) / len(triplet_data), print_loss/n))
+                    100. * (1+i) / len(triplet_data), print_loss/n, acc/n))
 
 torch.save(net, "final_model.pt")

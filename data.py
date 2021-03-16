@@ -163,9 +163,11 @@ def generate_triplet_data_loader(generate=False):
     if MODE == "easy":
         train_data = np.load("train_easy_data.npy")
         np.random.seed(1)
-        train_data = train_data[np.random.choice(range(len(train_data)), size=100000, replace=False)]
+        train_data = train_data[np.random.choice(range(len(train_data)), size=5000, replace=False)]
     else:
         train_data = np.load("train_data.npy")
+        np.random.seed(1)
+        train_data = train_data[np.random.choice(range(len(train_data)), size=5000, replace=False)]
     train_data = torch.LongTensor(train_data)
     train_data = DataLoader(train_data, batch_size=1, shuffle=True, num_workers=1)
     return train_data

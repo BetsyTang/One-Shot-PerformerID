@@ -25,14 +25,14 @@ class EventSequenceEncoder(nn.Module):
         output = self.output_fc(output).squeeze(-1) # [b]
         if output_logits:
             return output
-        # output = self.output_fc_activation(output)
+        output = self.output_fc_activation(output)
         return output
 
 class OSRNN(nn.Module):
     def __init__(self, input_size, hidden_size, num_layers):
         super(OSRNN, self).__init__()
         self.hidden_size = hidden_size
-        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, dropout=0.1)
+        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, dropout=0.3)
         self.fc = nn.Linear(hidden_size, 128)
         self.event_embedding = nn.Embedding(EventSeq.dim(), EventSeq.dim())
 
