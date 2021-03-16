@@ -56,11 +56,8 @@ for epoch in range(50):  # loop over the dataset multiple times
         # zero the parameter gradients
         optimizer.zero_grad()
         # forward + backward + optimize
-        print(inputs[0].shape)
         output_1,output_2,output_3 = net.forward(inputs[0],inputs[1],inputs[2])
-        print(output_1.shape)
-        print(cos(output_1.squeeze(), output_2.squeeze()))
-        if (cos(output_1, output_2).item() > 0) and (cos(output_1, output_3).item() < 0):
+        if (cos(output_1, output_2).mean(0) > 0) and (cos(output_1, output_3).mean(0) < 0):
             acc += 1
 
         loss = criterion(output_1, output_2, output_3) 
