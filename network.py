@@ -40,8 +40,8 @@ class OSRNN(nn.Module):
 
     def forward(self, input_layer):
         input_layer = self.event_embedding(input_layer)
-        h0 = torch.zeros(self.num_layers, input_layer.size(0), self.hidden_size).to(device)
-        c0 = torch.zeros(self.num_layers, input_layer.size(0), self.hidden_size).to(device)
+        h0 = torch.zeros(self.num_layers, input_layer.size(1), self.hidden_size).to(device)
+        c0 = torch.zeros(self.num_layers, input_layer.size(1), self.hidden_size).to(device)
         out, hidden = self.lstm(input_layer, (h0, c0))
         out = self.fc(out[:, -1, :])
         return out
