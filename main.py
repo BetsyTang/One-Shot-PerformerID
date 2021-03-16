@@ -20,6 +20,7 @@ triplet_data = generate_triplet_data_loader(generate=False)
 print(len(triplet_data))
 print("Building network")
 net = TripletNet(OSRNN(240,512,3)).to(device)
+print(net)
 cos = nn.CosineSimilarity(dim=0)
 # net = TripletNet(EventSequenceEncoder(hidden_dim=256, gru_layers=5)).to(device)
 # net = torch.load("final_model.pt")
@@ -55,6 +56,7 @@ for epoch in range(50):  # loop over the dataset multiple times
         # zero the parameter gradients
         optimizer.zero_grad()
         # forward + backward + optimize
+        print(inputs[0].shape)
         output_1,output_2,output_3 = net.forward(inputs[0],inputs[1],inputs[2])
         print(output_1.shape)
         print(cos(output_1.squeeze(), output_2.squeeze()))
