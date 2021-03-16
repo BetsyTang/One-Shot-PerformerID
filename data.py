@@ -10,7 +10,7 @@ import utils
 from sequence import EventSeq, ControlSeq
 from torch.utils.data import DataLoader
 
-MODE = "easy"
+MODE = "hard"
 
 
 # pylint: disable=E1101
