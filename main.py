@@ -57,7 +57,7 @@ for epoch in range(50):  # loop over the dataset multiple times
         # forward + backward + optimize
         output_1,output_2,output_3 = net.forward(inputs[0],inputs[1],inputs[2])
 
-        print(cos(output_1, output_2))
+        print(cos(output_1.squeeze(), output_2.squeeze()))
         if (cos(output_1, output_2).item() > 0) and (cos(output_1, output_3).item() < 0):
             acc += 1
 
