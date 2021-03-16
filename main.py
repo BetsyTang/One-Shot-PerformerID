@@ -16,7 +16,7 @@ from sequence import NoteSeq, EventSeq, ControlSeq
 torch.backends.cudnn.benchmark = True
 
 print("Loading data")
-triplet_data = generate_triplet_data_loader(generate=True)
+triplet_data = generate_triplet_data_loader(generate=False)
 print(len(triplet_data))
 print("Building network")
 net = TripletNet(OSRNN(240,512,3)).to(device)
@@ -57,7 +57,8 @@ for epoch in range(50):  # loop over the dataset multiple times
         # forward + backward + optimize
         output_1,output_2,output_3 = net.forward(inputs[0],inputs[1],inputs[2])
 
-        if (cos(output_1, output_2) > 0) and (cos(output_1, output_3) < 0):
+        print(cos(output_1, output_2))
+        if (cos(output_1, output_2).item() > 0) and (cos(output_1, output_3).item() < 0):
             acc += 1
 
         loss = criterion(output_1, output_2, output_3) 
